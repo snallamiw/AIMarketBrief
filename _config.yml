@@ -11,6 +11,7 @@ author:
   name: "AI Market Brief"
 
 show_excerpts: true
+future: true
 permalink: /:year/:month/:day/:title/
 
 plugins:
