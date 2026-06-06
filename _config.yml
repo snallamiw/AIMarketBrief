@@ -1,0 +1,18 @@
+title: "AI Market Brief"
+description: "AI industry news, market movements & insights — updated 4× daily"
+baseurl: "/AIMarketBrief"
+url: "https://snallamiw.github.io"
+
+theme: minima
+minima:
+  skin: dark
+
+author:
+  name: "AI Market Brief"
+
+show_excerpts: true
+permalink: /:year/:month/:day/:title/
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
