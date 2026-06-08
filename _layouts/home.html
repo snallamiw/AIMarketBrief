@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ site.title }} — AI Market Briefs</title>
+  <meta name="description" content="{{ site.description }}" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap" />
+  {% feed_meta %}
+  {% seo %}
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root, [data-theme="dark"] {
+      --bg:         #0a0e17;
+      --panel:      #0f1623;
+      --panel-hover:#121c2e;
+      --border:     #1e2d45;
+      --border2:    #243550;
+      --green:      #00d084;
+      --green-dim:  #007a4d;
+      --green-bg:   rgba(0,208,132,0.07);
+      --blue:       #4fa3ff;
+      --yellow:     #f5c842;
+      --red:        #ff4d6a;
+      --text:       #ccd6f6;
+      --muted:      #5a7090;
+      --nav-bg:     rgba(10,14,23,0.92);
+      --grid-op:    0.3;
+      --glow:       rgba(0,208,132,0.055);
+      --tag-bg:     #1e2d45;
+      --toggle-bg:  #1e2d45;
+    }
+
+    [data-theme="light"] {
+      --bg:         #f4f6fa;
+      --panel:      #ffffff;
+      --panel-hover:#f0f4fb;
+      --border:     #dce3ef;
+      --border2:    #c8d3e6;
+      --green:      #007a4d;
+      --green-dim:  #00a866;
+      --green-bg:   rgba(0,122,77,0.06);
+      --blue:       #1a5fa8;
+      --yellow:     #b07d00;
+      --red:        #c0203a;
+      --text:       #1a2340;
+      --muted:      #7a8fb0;
+      --nav-bg:     rgba(244,246,250,0.95);
+      --grid-op:    0.6;
+      --glow:       rgba(0,122,77,0.04);
+      --tag-bg:     #e8ecf5;
+      --toggle-bg:  #dce3ef;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: var(--grid-op);
+      pointer-events: none;
+      z-index: 0;
+      transition: opacity 0.25s;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: -10%; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 500px;
+      background: radial-gradient(ellipse, var(--glow) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    .top-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 44px;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; } 50% { opacity:0.45; }
+    }
+    .nav-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--green);
+    }
+    .theme-toggle {
+      display: flex; align-items: center; gap: 6px;
+      cursor: pointer; border: none; background: none;
+      color: var(--muted); font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; padding: 4px 2px; transition: color 0.15s;
+    }
+    .theme-toggle:hover { color: var(--text); }
+    .toggle-track {
+      width: 32px; height: 17px; border-radius: 9px;
+      background: var(--toggle-bg); position: relative;
+      border: 1px solid var(--border2); transition: background 0.25s;
+    }
+    .toggle-knob {
+      position: absolute; top: 2px; left: 2px;
+      width: 11px; height: 11px; border-radius: 50%;
+      background: var(--green);
+      transition: transform 0.22s cubic-bezier(.4,0,.2,1), background 0.25s;
+    }
+    [data-theme="light"] .toggle-knob { transform: translateX(15px); background: var(--blue); }
+
+    /* ── HERO ── */
+    .wrapper { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+
+    .hero {
+      text-align: center;
+      padding: 3rem 1rem 2.5rem;
+    }
+    .hero-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1rem;
+    }
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 600; color: var(--text);
+      line-height: 1.2; margin-bottom: 0.8rem;
+    }
+    .hero-title span { color: var(--green); }
+    .hero-sub {
+      font-size: 1rem; color: var(--muted);
+      max-width: 480px; margin: 0 auto 2rem;
+    }
+
+    /* Latest CTA */
+    .latest-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--green);
+      color: var(--bg);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px; font-weight: 600;
+      padding: 0.65rem 1.4rem; border-radius: 5px;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+      letter-spacing: 0.04em;
+    }
+    .latest-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+    .latest-cta .arrow { font-size: 1rem; }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 2.5rem 0;
+      transition: border-color 0.25s;
+    }
+    .stat-cell {
+      background: var(--panel);
+      padding: 0.75rem 1rem;
+      display: flex; flex-direction: column; gap: 3px;
+      transition: background 0.25s;
+    }
+    .stat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .stat-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px; font-weight: 600;
+    }
+    .up   { color: var(--green); }
+    .down { color: var(--red); }
+    .neu  { color: var(--blue); }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.2rem;
+    }
+    .section-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .section-line { flex: 1; height: 1px; background: var(--border); margin-left: 1rem; }
+
+    /* ── POST CARDS ── */
+    .post-grid { display: flex; flex-direction: column; gap: 1px; }
+
+    /* Today group */
+    .day-group { margin-bottom: 2.5rem; }
+    .day-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.4rem 0;
+      margin-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .post-card {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      border-radius: 6px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 6px;
+      text-decoration: none;
+      color: var(--text);
+      transition: background 0.15s, border-left-color 0.15s, transform 0.15s;
+    }
+    .post-card:hover {
+      background: var(--panel-hover);
+      border-left-color: var(--green);
+      transform: translateX(2px);
+    }
+    .post-card:first-child { border-left-color: var(--green); }
+
+    .card-left { flex: 1; min-width: 0; }
+    .card-title {
+      font-size: 0.95rem; font-weight: 600;
+      color: var(--text); white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .card-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; color: var(--muted);
+    }
+    .card-right { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+    .slot-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; font-weight: 600;
+      padding: 2px 7px; border-radius: 3px;
+      background: var(--tag-bg); color: var(--muted);
+      transition: background 0.25s;
+    }
+    .slot-badge.latest {
+      background: var(--green-bg); color: var(--green);
+      border: 1px solid var(--green-dim);
+    }
+    .card-arrow { color: var(--muted); font-size: 0.85rem; }
+    .post-card:hover .card-arrow { color: var(--green); }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      margin-top: 3rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .site-footer span, .site-footer a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; color: var(--muted); text-decoration: none;
+    }
+    .site-footer a:hover { color: var(--green); }
+
+    @media (max-width: 600px) {
+      .wrapper { padding: 1.5rem 1rem 4rem; }
+      .top-nav { padding: 0 1rem; }
+      .hero { padding: 2rem 0 1.5rem; }
+      .hero-title { font-size: 1.8rem; }
+      .stats-bar { grid-template-columns: repeat(3, 1fr); }
+      .card-title { font-size: 0.88rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a class="nav-brand" href="{{ site.baseurl }}/">
+      <div class="nav-dot"></div>
+      <span class="nav-title">AI Market Brief</span>
+    </a>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Switch theme" aria-label="Toggle theme">
+      <span>🌙</span>
+      <div class="toggle-track"><div class="toggle-knob"></div></div>
+      <span>☀️</span>
+    </button>
+  </nav>
+
+  <div class="wrapper">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-eyebrow">AI-Generated · 4× Daily · Not Financial Advice</div>
+      <h1 class="hero-title">Your <span>Market Brief</span>,<br>Always Fresh</h1>
+      <p class="hero-sub">Concise market intelligence published at 6AM, 12PM, 5PM, and 9PM ET every day.</p>
+      <a class="latest-cta" href="{{ site.baseurl }}/latest/">
+        Read Latest Brief <span class="arrow">→</span>
+      </a>
+    </div>
+
+    <!-- Stats snapshot -->
+    <div class="stats-bar">
+      <div class="stat-cell"><div class="stat-label">S&amp;P 500</div><div class="stat-val up">▲ +0.93%</div></div>
+      <div class="stat-cell"><div class="stat-label">Nasdaq</div><div class="stat-val up">▲ +1.44%</div></div>
+      <div class="stat-cell"><div class="stat-label">Dow</div><div class="stat-val up">▲ +0.58%</div></div>
+      <div class="stat-cell"><div class="stat-label">VIX</div><div class="stat-val down">▲ 21.51</div></div>
+      <div class="stat-cell"><div class="stat-label">WTI</div><div class="stat-val down">$93.80</div></div>
+      <div class="stat-cell"><div class="stat-label">Gold</div><div class="stat-val down">▼ -3.10%</div></div>
+      <div class="stat-cell"><div class="stat-label">10Y Yield</div><div class="stat-val neu">4.57%</div></div>
+    </div>
+
+    <!-- All briefs -->
+    <div class="section-header">
+      <span class="section-title">All Briefs</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="post-grid">
+      {% assign posts_by_day = site.posts | group_by_exp: "post", "post.date | date: '%Y-%m-%d'" %}
+      {% for day in posts_by_day %}
+        <div class="day-group">
+          <div class="day-label">{{ day.name | date: "%A, %B %d, %Y" }}</div>
+          {% for post in day.items %}
+            <a class="post-card" href="{{ post.url | prepend: site.baseurl }}">
+              <div class="card-left">
+                <div class="card-title">{{ post.title }}</div>
+                <div class="card-meta">{{ post.date | date: "%I:%M %p ET" }}</div>
+              </div>
+              <div class="card-right">
+                {% if forloop.parentloop.first and forloop.first %}
+                  <span class="slot-badge latest">LATEST</span>
+                {% else %}
+                  <span class="slot-badge">{{ post.slot | default: "Brief" }}</span>
+                {% endif %}
+                <span class="card-arrow">→</span>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <footer class="site-footer">
+      <span>© {{ 'now' | date: "%Y" }} AI Market Brief · AI-generated · Not financial advice</span>
+      <a href="{{ site.baseurl }}/latest/">Latest Brief →</a>
+    </footer>
+
+  </div>
+
+  <script>
+    (function() {
+      var saved = localStorage.getItem('aimb-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+    function toggleTheme() {
+      var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('aimb-theme', next);
+    }
+  </script>
+
+</body>
+</html>
