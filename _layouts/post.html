@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,23 +10,60 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg:        #0a0e17;
-      --panel:     #0f1623;
-      --panel2:    #111827;
-      --border:    #1e2d45;
-      --border2:   #243550;
-      --green:     #00d084;
-      --green-dim: #007a4d;
-      --green-bg:  rgba(0,208,132,0.07);
-      --blue:      #4fa3ff;
-      --yellow:    #f5c842;
-      --red:       #ff4d6a;
-      --red-bg:    rgba(255,77,106,0.07);
-      --text:      #ccd6f6;
-      --muted:     #5a7090;
-      --mono:      'IBM Plex Mono', monospace;
-      --sans:      'IBM Plex Sans', sans-serif;
+    /* ── DARK THEME (default) ── */
+    :root, [data-theme="dark"] {
+      --bg:         #0a0e17;
+      --panel:      #0f1623;
+      --panel2:     #111827;
+      --border:     #1e2d45;
+      --border2:    #243550;
+      --green:      #00d084;
+      --green-dim:  #007a4d;
+      --green-bg:   rgba(0,208,132,0.07);
+      --blue:       #4fa3ff;
+      --yellow:     #f5c842;
+      --red:        #ff4d6a;
+      --text:       #ccd6f6;
+      --text2:      #8899bb;
+      --muted:      #5a7090;
+      --nav-bg:     rgba(10,14,23,0.92);
+      --grid-op:    0.3;
+      --glow:       rgba(0,208,132,0.055);
+      --row-odd:    #0f1623;
+      --row-even:   #0a0e17;
+      --row-hover:  #14203a;
+      --thead-bg:   #0d1929;
+      --code-bg:    #1e2d45;
+      --toggle-bg:  #1e2d45;
+      --toggle-knob:#ccd6f6;
+    }
+
+    /* ── LIGHT THEME ── */
+    [data-theme="light"] {
+      --bg:         #f4f6fa;
+      --panel:      #ffffff;
+      --panel2:     #f0f3f8;
+      --border:     #dce3ef;
+      --border2:    #c8d3e6;
+      --green:      #007a4d;
+      --green-dim:  #00a866;
+      --green-bg:   rgba(0,122,77,0.06);
+      --blue:       #1a5fa8;
+      --yellow:     #b07d00;
+      --red:        #c0203a;
+      --text:       #1a2340;
+      --text2:      #4a5878;
+      --muted:      #7a8fb0;
+      --nav-bg:     rgba(244,246,250,0.95);
+      --grid-op:    0.6;
+      --glow:       rgba(0,122,77,0.04);
+      --row-odd:    #ffffff;
+      --row-even:   #f7f9fc;
+      --row-hover:  #edf1fa;
+      --thead-bg:   #eef1f8;
+      --code-bg:    #e8ecf5;
+      --toggle-bg:  #dce3ef;
+      --toggle-knob:#1a2340;
     }
 
     html { scroll-behavior: smooth; }
@@ -34,10 +71,11 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: var(--sans);
+      font-family: 'IBM Plex Sans', sans-serif;
       font-size: 15px;
       line-height: 1.7;
       min-height: 100vh;
+      transition: background 0.25s, color 0.25s;
     }
 
     /* Grid background */
@@ -49,21 +87,20 @@
         linear-gradient(var(--border) 1px, transparent 1px),
         linear-gradient(90deg, var(--border) 1px, transparent 1px);
       background-size: 40px 40px;
-      opacity: 0.3;
+      opacity: var(--grid-op);
       pointer-events: none;
       z-index: 0;
+      transition: opacity 0.25s;
     }
 
     /* Top glow */
     body::after {
       content: '';
       position: fixed;
-      top: -10%;
-      left: 50%;
+      top: -10%; left: 50%;
       transform: translateX(-50%);
-      width: 900px;
-      height: 400px;
-      background: radial-gradient(ellipse, rgba(0,208,132,0.055) 0%, transparent 70%);
+      width: 900px; height: 400px;
+      background: radial-gradient(ellipse, var(--glow) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -73,7 +110,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(10,14,23,0.92);
+      background: var(--nav-bg);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
       display: flex;
@@ -81,6 +118,7 @@
       justify-content: space-between;
       padding: 0 2rem;
       height: 44px;
+      transition: background 0.25s, border-color 0.25s;
     }
     .nav-brand {
       display: flex;
@@ -94,26 +132,28 @@
       background: var(--green);
       box-shadow: 0 0 8px var(--green);
       animation: pulse 2s ease-in-out infinite;
+      transition: background 0.25s;
     }
     @keyframes pulse {
-      0%,100% { opacity:1; box-shadow: 0 0 8px var(--green); }
-      50%      { opacity:0.5; box-shadow: 0 0 3px var(--green-dim); }
+      0%,100% { opacity:1; }
+      50%      { opacity:0.45; }
     }
     .nav-title {
-      font-family: var(--mono);
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--green);
+      transition: color 0.25s;
     }
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1rem;
     }
     .nav-back {
-      font-family: var(--mono);
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 11px;
       color: var(--muted);
       text-decoration: none;
@@ -121,15 +161,54 @@
     }
     .nav-back:hover { color: var(--text); }
     .nav-slot {
-      font-family: var(--mono);
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 11px;
-      color: var(--bg);
-      background: var(--green);
       padding: 2px 8px;
       border-radius: 3px;
       font-weight: 600;
       letter-spacing: 0.05em;
+      background: var(--green);
+      color: var(--bg);
+      transition: background 0.25s, color 0.25s;
     }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 4px 2px;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      transition: color 0.15s;
+    }
+    .theme-toggle:hover { color: var(--text); }
+    .toggle-track {
+      width: 32px; height: 17px;
+      border-radius: 9px;
+      background: var(--toggle-bg);
+      position: relative;
+      transition: background 0.25s;
+      flex-shrink: 0;
+      border: 1px solid var(--border2);
+    }
+    .toggle-knob {
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: var(--green);
+      transition: transform 0.22s cubic-bezier(.4,0,.2,1), background 0.25s;
+    }
+    [data-theme="light"] .toggle-knob {
+      transform: translateX(15px);
+      background: var(--blue);
+    }
+    .toggle-icon { font-size: 13px; line-height: 1; }
 
     /* ── LAYOUT ── */
     .wrapper {
@@ -148,9 +227,10 @@
       border-radius: 8px;
       padding: 1.8rem 2rem;
       margin-bottom: 2.5rem;
+      transition: background 0.25s, border-color 0.25s;
     }
     .post-date {
-      font-family: var(--mono);
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 11px;
       color: var(--muted);
       letter-spacing: 0.1em;
@@ -165,14 +245,8 @@
     }
 
     /* ── CONTENT ── */
-    .post-content { color: var(--text); }
+    .post-content p { margin-bottom: 1.1rem; }
 
-    /* Paragraphs */
-    .post-content p {
-      margin-bottom: 1.1rem;
-    }
-
-    /* Blockquote — disclaimer */
     .post-content blockquote {
       border-left: 3px solid var(--green-dim);
       background: var(--green-bg);
@@ -182,55 +256,54 @@
       font-size: 12.5px;
       color: var(--muted);
       font-style: italic;
+      transition: background 0.25s;
     }
     .post-content blockquote p { margin: 0; }
 
-    /* Horizontal rule — section divider */
     .post-content hr {
       border: none;
       border-top: 1px solid var(--border2);
       margin: 2rem 0;
+      transition: border-color 0.25s;
     }
 
-    /* Headings */
     .post-content h1,
     .post-content h2,
     .post-content h3 {
-      font-family: var(--sans);
       font-weight: 600;
       line-height: 1.3;
       margin-top: 2.2rem;
       margin-bottom: 0.8rem;
     }
     .post-content h2 {
-      font-size: 1.05rem;
+      font-size: 1.0rem;
       color: var(--green);
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      font-family: var(--mono);
+      font-family: 'IBM Plex Mono', monospace;
       padding-bottom: 0.4rem;
       border-bottom: 1px solid var(--border);
+      transition: color 0.25s, border-color 0.25s;
     }
     .post-content h3 {
       font-size: 1rem;
       color: var(--blue);
-      font-family: var(--mono);
+      font-family: 'IBM Plex Mono', monospace;
+      transition: color 0.25s;
     }
 
-    /* Bold inline */
-    .post-content strong { color: #e2e8f8; font-weight: 600; }
+    .post-content strong { color: var(--text); font-weight: 600; }
 
-    /* Inline code */
     .post-content code {
-      font-family: var(--mono);
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 12.5px;
-      background: var(--border);
+      background: var(--code-bg);
       color: var(--yellow);
       padding: 1px 5px;
       border-radius: 3px;
+      transition: background 0.25s;
     }
 
-    /* Lists */
     .post-content ul,
     .post-content ol {
       padding-left: 1.4rem;
@@ -243,16 +316,15 @@
     .post-content table {
       width: 100%;
       border-collapse: collapse;
-      font-family: var(--mono);
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 12.5px;
       margin-bottom: 1.5rem;
       border: 1px solid var(--border);
       border-radius: 6px;
       overflow: hidden;
+      transition: border-color 0.25s;
     }
-    .post-content thead tr {
-      background: #0d1929;
-    }
+    .post-content thead tr { background: var(--thead-bg); transition: background 0.25s; }
     .post-content thead th {
       padding: 0.55rem 0.85rem;
       text-align: left;
@@ -263,22 +335,23 @@
       color: var(--muted);
       border-bottom: 1px solid var(--border2);
       white-space: nowrap;
+      transition: color 0.25s, border-color 0.25s;
     }
     .post-content tbody tr {
       border-bottom: 1px solid var(--border);
       transition: background 0.1s;
     }
     .post-content tbody tr:last-child { border-bottom: none; }
-    .post-content tbody tr:nth-child(odd)  { background: var(--panel); }
-    .post-content tbody tr:nth-child(even) { background: var(--bg); }
-    .post-content tbody tr:hover { background: #14203a; }
+    .post-content tbody tr:nth-child(odd)  { background: var(--row-odd); }
+    .post-content tbody tr:nth-child(even) { background: var(--row-even); }
+    .post-content tbody tr:hover { background: var(--row-hover); }
     .post-content td {
       padding: 0.5rem 0.85rem;
       vertical-align: top;
       color: var(--text);
+      transition: color 0.25s;
     }
 
-    /* Color up/down values in tables via JS below */
     .val-up   { color: var(--green) !important; font-weight: 600; }
     .val-down { color: var(--red)   !important; font-weight: 600; }
     .val-neu  { color: var(--blue)  !important; }
@@ -294,28 +367,25 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 0.5rem;
+      transition: border-color 0.25s;
     }
-    .post-footer a {
-      font-family: var(--mono);
+    .post-footer a, .post-footer span {
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 11px;
       color: var(--muted);
       text-decoration: none;
+      transition: color 0.15s;
     }
     .post-footer a:hover { color: var(--green); }
-    .post-footer span {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-    }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
       .wrapper { padding: 1.5rem 1rem 4rem; }
-      .post-header { padding: 1.2rem 1.2rem; }
+      .post-header { padding: 1.2rem; }
       .top-nav { padding: 0 1rem; }
+      .nav-back-text { display: none; }
       .post-content table { font-size: 11px; }
       .post-content thead th,
-      .post-content td { padding: 0.45rem 0.6rem; }
+      .post-content td { padding: 0.4rem 0.5rem; }
     }
   </style>
 </head>
@@ -327,13 +397,20 @@
       <span class="nav-title">AI Market Brief</span>
     </a>
     <div class="nav-right">
-      <a class="nav-back" href="{{ site.baseurl }}/">← All briefs</a>
+      <a class="nav-back" href="{{ site.baseurl }}/">
+        <span class="nav-back-text">← All briefs</span>
+        <span class="nav-back-mobile" style="display:none">←</span>
+      </a>
       {% if page.slot %}<span class="nav-slot">{{ page.slot }}</span>{% endif %}
+      <button class="theme-toggle" onclick="toggleTheme()" title="Switch theme" aria-label="Toggle light/dark theme">
+        <span class="toggle-icon" id="theme-icon">🌙</span>
+        <div class="toggle-track"><div class="toggle-knob"></div></div>
+        <span class="toggle-icon" id="theme-icon-sun">☀️</span>
+      </button>
     </div>
   </nav>
 
   <div class="wrapper">
-
     <header class="post-header">
       <div class="post-date">{{ page.date | date: "%A, %B %d, %Y" }}</div>
       <h1 class="post-title">{{ page.title }}</h1>
@@ -347,19 +424,31 @@
       <span>AI-generated · Not financial advice</span>
       <a href="{{ site.baseurl }}/">← Back to all briefs</a>
     </footer>
-
   </div>
 
   <script>
-    // Auto-color table cells containing ▲/+, ▼/-, and known neutral patterns
+    // Restore saved theme before paint
+    (function() {
+      var saved = localStorage.getItem('aimb-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('aimb-theme', next);
+    }
+
+    // Color table cells
     document.querySelectorAll('.post-content td').forEach(function(td) {
       var t = td.textContent.trim();
-      if (/[▲+]/.test(t) && !/guessed|estimated|conflict|N\/A/i.test(t)) {
+      if (/guessed|estimated|\(est\.|conflict/i.test(t)) {
+        td.classList.add('val-warn');
+      } else if (/[▲+]/.test(t) && !/N\/A/.test(t)) {
         td.classList.add('val-up');
       } else if (/[▼]/.test(t) || /^-\d/.test(t)) {
         td.classList.add('val-down');
-      } else if (/guessed|estimated|\(est\.|conflict/i.test(t)) {
-        td.classList.add('val-warn');
       } else if (/^[\d.]+%$/.test(t) || /^\$[\d,]+/.test(t)) {
         td.classList.add('val-neu');
       }
