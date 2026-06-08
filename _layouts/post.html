@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ page.title }} — {{ site.title }}</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap" />
+  {% feed_meta %}
+  {% seo %}
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0e17;
+      --panel:     #0f1623;
+      --panel2:    #111827;
+      --border:    #1e2d45;
+      --border2:   #243550;
+      --green:     #00d084;
+      --green-dim: #007a4d;
+      --green-bg:  rgba(0,208,132,0.07);
+      --blue:      #4fa3ff;
+      --yellow:    #f5c842;
+      --red:       #ff4d6a;
+      --red-bg:    rgba(255,77,106,0.07);
+      --text:      #ccd6f6;
+      --muted:     #5a7090;
+      --mono:      'IBM Plex Mono', monospace;
+      --sans:      'IBM Plex Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Top glow */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(0,208,132,0.055) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── TOP NAV ── */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,14,23,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 44px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .nav-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; box-shadow: 0 0 8px var(--green); }
+      50%      { opacity:0.5; box-shadow: 0 0 3px var(--green-dim); }
+    }
+    .nav-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .nav-back {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--text); }
+    .nav-slot {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--bg);
+      background: var(--green);
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── LAYOUT ── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+
+    /* ── POST HEADER ── */
+    .post-header {
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--green);
+      background: var(--panel);
+      border-radius: 8px;
+      padding: 1.8rem 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .post-date {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .post-title {
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    /* ── CONTENT ── */
+    .post-content { color: var(--text); }
+
+    /* Paragraphs */
+    .post-content p {
+      margin-bottom: 1.1rem;
+    }
+
+    /* Blockquote — disclaimer */
+    .post-content blockquote {
+      border-left: 3px solid var(--green-dim);
+      background: var(--green-bg);
+      padding: 0.7rem 1rem;
+      border-radius: 0 5px 5px 0;
+      margin-bottom: 1.5rem;
+      font-size: 12.5px;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .post-content blockquote p { margin: 0; }
+
+    /* Horizontal rule — section divider */
+    .post-content hr {
+      border: none;
+      border-top: 1px solid var(--border2);
+      margin: 2rem 0;
+    }
+
+    /* Headings */
+    .post-content h1,
+    .post-content h2,
+    .post-content h3 {
+      font-family: var(--sans);
+      font-weight: 600;
+      line-height: 1.3;
+      margin-top: 2.2rem;
+      margin-bottom: 0.8rem;
+    }
+    .post-content h2 {
+      font-size: 1.05rem;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-family: var(--mono);
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .post-content h3 {
+      font-size: 1rem;
+      color: var(--blue);
+      font-family: var(--mono);
+    }
+
+    /* Bold inline */
+    .post-content strong { color: #e2e8f8; font-weight: 600; }
+
+    /* Inline code */
+    .post-content code {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      background: var(--border);
+      color: var(--yellow);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* Lists */
+    .post-content ul,
+    .post-content ol {
+      padding-left: 1.4rem;
+      margin-bottom: 1.1rem;
+    }
+    .post-content li { margin-bottom: 0.35rem; }
+    .post-content li::marker { color: var(--green-dim); }
+
+    /* ── TABLES ── */
+    .post-content table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .post-content thead tr {
+      background: #0d1929;
+    }
+    .post-content thead th {
+      padding: 0.55rem 0.85rem;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border2);
+      white-space: nowrap;
+    }
+    .post-content tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+    .post-content tbody tr:last-child { border-bottom: none; }
+    .post-content tbody tr:nth-child(odd)  { background: var(--panel); }
+    .post-content tbody tr:nth-child(even) { background: var(--bg); }
+    .post-content tbody tr:hover { background: #14203a; }
+    .post-content td {
+      padding: 0.5rem 0.85rem;
+      vertical-align: top;
+      color: var(--text);
+    }
+
+    /* Color up/down values in tables via JS below */
+    .val-up   { color: var(--green) !important; font-weight: 600; }
+    .val-down { color: var(--red)   !important; font-weight: 600; }
+    .val-neu  { color: var(--blue)  !important; }
+    .val-warn { color: var(--yellow)!important; }
+
+    /* ── FOOTER ── */
+    .post-footer {
+      margin-top: 3rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .post-footer a {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .post-footer a:hover { color: var(--green); }
+    .post-footer span {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .wrapper { padding: 1.5rem 1rem 4rem; }
+      .post-header { padding: 1.2rem 1.2rem; }
+      .top-nav { padding: 0 1rem; }
+      .post-content table { font-size: 11px; }
+      .post-content thead th,
+      .post-content td { padding: 0.45rem 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a class="nav-brand" href="{{ site.baseurl }}/">
+      <div class="nav-dot"></div>
+      <span class="nav-title">AI Market Brief</span>
+    </a>
+    <div class="nav-right">
+      <a class="nav-back" href="{{ site.baseurl }}/">← All briefs</a>
+      {% if page.slot %}<span class="nav-slot">{{ page.slot }}</span>{% endif %}
+    </div>
+  </nav>
+
+  <div class="wrapper">
+
+    <header class="post-header">
+      <div class="post-date">{{ page.date | date: "%A, %B %d, %Y" }}</div>
+      <h1 class="post-title">{{ page.title }}</h1>
+    </header>
+
+    <article class="post-content">
+      {{ content }}
+    </article>
+
+    <footer class="post-footer">
+      <span>AI-generated · Not financial advice</span>
+      <a href="{{ site.baseurl }}/">← Back to all briefs</a>
+    </footer>
+
+  </div>
+
+  <script>
+    // Auto-color table cells containing ▲/+, ▼/-, and known neutral patterns
+    document.querySelectorAll('.post-content td').forEach(function(td) {
+      var t = td.textContent.trim();
+      if (/[▲+]/.test(t) && !/guessed|estimated|conflict|N\/A/i.test(t)) {
+        td.classList.add('val-up');
+      } else if (/[▼]/.test(t) || /^-\d/.test(t)) {
+        td.classList.add('val-down');
+      } else if (/guessed|estimated|\(est\.|conflict/i.test(t)) {
+        td.classList.add('val-warn');
+      } else if (/^[\d.]+%$/.test(t) || /^\$[\d,]+/.test(t)) {
+        td.classList.add('val-neu');
+      }
+    });
+  </script>
+
+</body>
+</html>
